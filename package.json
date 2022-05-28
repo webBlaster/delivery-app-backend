@@ -1,0 +1,22 @@
+{
+  "name": "delivery-app-backend",
+  "version": "1.0.0",
+  "description": "backend of delivery app",
+  "main": "src/index.js",
+  "scripts": {
+    "prod": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "webblaster",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "node-fetch": "^3.2.4",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.20.1"
+  }
+}
