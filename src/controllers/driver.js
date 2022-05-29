@@ -20,7 +20,25 @@ class Driver {
     return res.status(500).send("failed to fetch order");
   }
 
-  static async decideOrder(req, res) {}
+  static async decideOrder(req, res) {
+    const id = req.body?.id;
+    const accept = req.body?.accept;
+
+    if (Object.keys(req.body).length < 2) {
+      return res.status(400).send("parameters cant be left empty");
+    }
+
+    //find order from id
+    order = await findOne({ where: { id: id } });
+    //change order status
+    if (order) {
+      order.status = accept ? "in_progress" : "declined";
+      await user.save();
+      res.status(200).send(`${accept ? "accepted" : "declined"} order`);
+      return;
+    }
+    return res.status(500).send("failed to decide");
+  }
 }
 
 module.exports = Driver;

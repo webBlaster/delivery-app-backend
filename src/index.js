@@ -15,7 +15,7 @@ app.post("/create-order", controller.Customer.addOrder);
 
 //drivers
 app.get("/orders", controller.Driver.getOrders);
-app.get("/order", controller.Driver.getOrder);
+app.post("/order", controller.Driver.getOrder);
 app.post("/decide-order", controller.Driver.decideOrder);
 
 //admin
