@@ -35,9 +35,9 @@ class Customer {
 
     if (order) {
       console.log(order);
-      return res.status(201).send("order added succesfully");
+      return res.status(201).send("order created");
     }
-    res.status(500).send("the resource was not created");
+    res.status(500).send("order was not created");
   }
 }
 
