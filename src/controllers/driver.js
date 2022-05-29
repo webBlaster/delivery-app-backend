@@ -39,6 +39,25 @@ class Driver {
     }
     return res.status(500).send("failed to decide");
   }
+
+  static async completeOrder(req, res) {
+    const id = req.body?.id;
+
+    if (!id) {
+      return res.status(400).send("parameters cant be left empty");
+    }
+
+    //find order from id
+    order = await findOne({ where: { id: id } });
+    //update order status
+    if (order) {
+      order.status = "completed";
+      await user.save();
+      res.status(200).send("updated order to complete order");
+      return;
+    }
+    return res.status(500).send("failed to update to complete");
+  }
 }
 
 module.exports = Driver;
