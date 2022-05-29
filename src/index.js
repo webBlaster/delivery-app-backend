@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-
+const controller = require("./controllers/index");
 //middleware
 app.use(cors());
 
@@ -11,19 +11,13 @@ app.get("/", (req, res) => {
 });
 
 //customers
-/**
- * send order
- */
-app.post("/create-order", (req, res) => {});
+app.post("/create-order", controller.Customer.addOrder);
+
 //drivers
-/**
- * get orders
- * get order
- * decline/accept order
- */
-app.get("/orders", (req, res) => {});
-app.get("/order", (req, res) => {});
-app.post("/decide-order", (req, res) => {});
+app.get("/orders", controller.Driver.getOrders);
+app.get("/order", controller.Driver.getOrder);
+app.post("/decide-order", controller.Driver.decideOrder);
+
 //admin
 
 const port = process.env.PORT || 5000;
