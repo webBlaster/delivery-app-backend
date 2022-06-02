@@ -19,6 +19,7 @@ app.get("/orders", controller.Driver.getOrders);
 app.post("/order", controller.Driver.getOrder);
 app.post("/decide-order", controller.Driver.decideOrder);
 app.post("/complete-order", controller.Driver.completeOrder);
+app.get("/validate-ip", controller.Driver.validateIp);
 
 //admin
 

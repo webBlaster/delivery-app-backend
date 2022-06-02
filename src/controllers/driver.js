@@ -58,6 +58,19 @@ class Driver {
     }
     return res.status(500).send("failed to update to complete");
   }
+
+  static async validateIp(req, res) {
+    let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    let ipArray = [];
+    if (!ipArray.includes(ip)) {
+      return res
+        .status(200)
+        .json({ data: ip, message: "your ip address is valid" });
+    }
+    return res
+      .status(400)
+      .json({ data: ip, message: "your ip address is invalid" });
+  }
 }
 
 module.exports = Driver;
