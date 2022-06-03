@@ -60,16 +60,18 @@ class Driver {
   }
 
   static async validateIp(req, res) {
-    let ip = req.connection.remoteAddress || req.headers["x-forwarded-for"];
-    let ipArray = [];
-    if (!ipArray.includes(ip)) {
+    let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    let ipSplits = ip.split(".");
+    let ipSlice = `${ipSplits[0]}.${ipSplits[1]}`;
+    let ipSliceArray = ["105.112", "102.89"];
+    if (ipSliceArray.includes(ipSlice)) {
       return res
         .status(200)
-        .json({ data: ip, message: "your ip address is valid" });
+        .json({ data: ipSlice, message: "your ip address is valid" });
     }
     return res
       .status(400)
-      .json({ data: ip, message: "your ip address is invalid" });
+      .json({ data: ipSlice, message: "your ip address is invalid" });
   }
 }
 
