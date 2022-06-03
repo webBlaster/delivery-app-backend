@@ -60,7 +60,7 @@ class Driver {
   }
 
   static async validateIp(req, res) {
-    let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    let ip = req.connection.remoteAddress || req.headers["x-forwarded-for"];
     let ipArray = [];
     if (!ipArray.includes(ip)) {
       return res
