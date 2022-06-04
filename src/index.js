@@ -29,7 +29,8 @@ app.get("/validate-ip", controller.Driver.validateIp);
 app.get("/get-current-location", (req, res) => {
   const headers = {
     "Content-Type": "text/event-stream",
-    Connection: "keep-alive",
+    // prettier-ignore
+    "Connection": "keep-alive",
     "Cache-Control": "no-cache",
   };
   res.writeHead(200, headers);
