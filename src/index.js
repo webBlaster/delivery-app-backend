@@ -2,13 +2,11 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const controller = require("./controllers/index");
+const client = require("./config");
 
 //middleware
 app.use(cors());
 app.use(express.json());
-
-//event subscribers
-let subscribers = [];
 
 //routes
 app.get("/", (req, res) => {
@@ -33,10 +31,17 @@ app.get("/get-current-location", function (req, res) {
   });
 
   //pull most recent geocode form redis
-  setInterval(() => {
-    res.write(`${subscribers}`);
-    res.write("\n\n");
-  }, 5000);
+  setInterval(async () => {
+    try {
+      let geocode = await client.get("Geocode");
+      if (geocode) {
+        console.log(geocode);
+        res.write(`data:${JSON.stringify(geocode)}\n\n`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, 20000);
 });
 
 // //broadcast geolocation
@@ -61,14 +66,18 @@ app.get("/get-current-location", function (req, res) {
 // });
 
 app.post("/emit-current-location", (req, res) => {
-  let { lat, long } = req.body;
-  let data = { lat, long };
+  let { lat, lon } = req.body;
+  let data = { lat, lon };
 
-  subscribers.push(`${data}`);
   //store geocode on redis
   //update geocode on redis
-
-  res.status(200).send("geolocation sent");
+  try {
+    client.set("Geocode", `${JSON.stringify(data)}`);
+    res.status(200).send("geolocation sent");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("failed to emit geolocation");
+  }
 });
 
 //admin
