@@ -67,11 +67,11 @@ class Driver {
     if (ipSliceArray.includes(ipSlice)) {
       return res
         .status(200)
-        .json({ data: ipSlice, message: "your ip address is valid" });
+        .json({ data: ip, message: "your ip address is valid" });
     }
     return res
       .status(400)
-      .json({ data: ipSlice, message: "your ip address is invalid" });
+      .json({ data: ip, message: "your ip address is invalid" });
   }
 }
 

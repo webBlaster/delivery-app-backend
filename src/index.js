@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const controller = require("./controllers/index");
-const { response } = require("express");
+
 //middleware
 app.use(cors());
 app.use(express.json());
@@ -25,31 +25,49 @@ app.post("/decide-order", controller.Driver.decideOrder);
 app.post("/complete-order", controller.Driver.completeOrder);
 app.get("/validate-ip", controller.Driver.validateIp);
 
-//broadcast geolocation
-app.get("/get-current-location", (req, res) => {
-  const headers = {
+app.get("/get-current-location", function (req, res) {
+  res.writeHead(200, {
+    Connection: "keep-alive",
     "Content-Type": "text/event-stream",
-    // prettier-ignore
-    "Connection": "keep-alive",
     "Cache-Control": "no-cache",
-  };
-  res.writeHead(200, headers);
-  const subscriberId = subscribers.length + 1;
-  subscribers.push({ id: subscriberId, res });
-  res.write(`connected`);
-
-  req.on("close", () => {
-    console.log(`${subscriberId} Connection closed`);
-    subscribers = subscribers.filter((sub) => sub.id !== subscriberId);
   });
+
+  //pull most recent geocode form redis
+  setInterval(() => {
+    res.write(`${subscribers}`);
+    res.write("\n\n");
+  }, 5000);
 });
+
+// //broadcast geolocation
+// app.get("/get-current-location", (req, res) => {
+//   const headers = {
+//     "Content-Type": "text/event-stream",
+//     // prettier-ignore
+//     "Connection": "keep-alive",
+//     "Cache-Control": "no-cache",
+//   };
+//   res.writeHead(200, headers);
+//   const subscriberId = subscribers.length + 1;
+//   subscribers.push({ id: subscriberId, res });
+
+//   res.write(`connected`);
+//   res.flush();
+
+//   req.on("close", () => {
+//     console.log(`${subscriberId} Connection closed`);
+//     subscribers = subscribers.filter((sub) => sub.id !== subscriberId);
+//   });
+// });
 
 app.post("/emit-current-location", (req, res) => {
   let { lat, long } = req.body;
   let data = { lat, long };
-  subscribers.forEach((subscriber) =>
-    subscriber.res.write(`geolocation: ${JSON.stringify(data)}\n\n`)
-  );
+
+  subscribers.push(`${data}`);
+  //store geocode on redis
+  //update geocode on redis
+
   res.status(200).send("geolocation sent");
 });
 
