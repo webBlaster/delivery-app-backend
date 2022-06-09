@@ -1,4 +1,5 @@
 const db = require("../models/models/index");
+const client = require("../config");
 
 class Driver {
   static async getOrders(req, res) {
@@ -72,6 +73,21 @@ class Driver {
     return res
       .status(400)
       .json({ data: ip, message: "your ip address is invalid" });
+  }
+
+  static emitCurrentLocation(req, res) {
+    let { lat, lon } = req.body;
+    let data = { lat, lon };
+
+    //store geocode on redis
+    //update geocode on redis
+    try {
+      client.set("Geocode", `${JSON.stringify(data)}`);
+      res.status(200).send("geolocation sent");
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("failed to emit geolocation");
+    }
   }
 }
 
