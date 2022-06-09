@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       size: DataTypes.STRING,
       description: DataTypes.STRING,
       status: DataTypes.STRING,
+      ip: { type: DataTypes.STRING, defaultValue: null, allowNull: true },
     },
     {
       sequelize,

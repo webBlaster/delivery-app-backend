@@ -25,6 +25,12 @@ class Driver {
     const id = req.body?.id;
     const accept = req.body?.accept;
 
+    let ipSliceArray = ["105.112", "102.89"];
+
+    let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    let ipSplits = ip.split(".");
+    let ipSlice = `${ipSplits[0]}.${ipSplits[1]}`;
+
     if (Object.keys(req.body).length < 2) {
       return res.status(400).send("parameters cant be left empty");
     }
@@ -33,7 +39,10 @@ class Driver {
     order = await findOne({ where: { id: id } });
     //change order status
     if (order) {
+      if (order.status !== "pending")
+        return res.status(400).send("order already decided");
       order.status = accept ? "in_progress" : "declined";
+      order.ip = ipSlice;
       await user.save();
       res.status(200).send(`${accept ? "accepted" : "declined"} order`);
       return;
