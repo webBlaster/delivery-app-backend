@@ -3,7 +3,7 @@ const client = require("../config");
 
 class Driver {
   static async getOrders(req, res) {
-    const orders = await db.Order.findAll();
+    const orders = await db.Order.findAll({ where: { status: "pending" } });
 
     if (orders) {
       return res.status(200).json({ data: orders, message: "fetched orders" });
@@ -25,7 +25,7 @@ class Driver {
     const id = req.body?.id;
     const accept = req.body?.accept;
 
-    let ipSliceArray = ["105.112", "102.89"];
+    //let ipSliceArray = ["105.112", "102.89"];
 
     let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     let ipSplits = ip.split(".");
@@ -36,14 +36,14 @@ class Driver {
     }
 
     //find order from id
-    order = await findOne({ where: { id: id } });
+    let order = await db.Order.findOne({ where: { id: id } });
     //change order status
     if (order) {
       if (order.status !== "pending")
         return res.status(400).send("order already decided");
       order.status = accept ? "in_progress" : "declined";
       order.ip = ipSlice;
-      await user.save();
+      await order.save();
       res.status(200).send(`${accept ? "accepted" : "declined"} order`);
       return;
     }
@@ -58,11 +58,11 @@ class Driver {
     }
 
     //find order from id
-    order = await findOne({ where: { id: id } });
+    let order = await db.Order.findOne({ where: { id: JSON.parse(id) } });
     //update order status
     if (order) {
       order.status = "completed";
-      await user.save();
+      await order.save();
       res.status(200).send("updated order to complete order");
       return;
     }
@@ -97,6 +97,30 @@ class Driver {
       console.log(error);
       res.status(500).send("failed to emit geolocation");
     }
+  }
+
+  static async trackOrder(req, res) {
+    let { id } = req.body;
+
+    if (!id) {
+      return res.status(400).send("parameters cant be left empty");
+    }
+
+    //find order from id
+    let order = await db.Order.findOne({ where: { id: JSON.parse(id) } });
+    //update order status
+    if (order) {
+      if (order?.status === "in_progress" /*&& order?.ip !== null*/) {
+        res.status(200).json({ data: order, message: "fetched order" });
+        return;
+      }
+      res.status(200).json({
+        data: { status: order.status },
+        message: "fetched order status",
+      });
+      return;
+    }
+    return res.status(404).send("order not found");
   }
 }
 

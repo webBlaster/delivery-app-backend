@@ -19,14 +19,11 @@ app.get("/get-current-location", controller.Customer.getCurrentLocation);
 //drivers
 app.get("/orders", controller.Driver.getOrders);
 app.post("/order", controller.Driver.getOrder);
+app.post("/track-order", controller.Driver.trackOrder);
 app.post("/decide-order", controller.Driver.decideOrder);
 app.post("/complete-order", controller.Driver.completeOrder);
 app.get("/validate-ip", controller.Driver.validateIp);
 app.post("/emit-current-location", controller.Driver.emitCurrentLocation);
-
-//broadcast location
-
-//admin
 
 const port = process.env.PORT || 5000;
 
