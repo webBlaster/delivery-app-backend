@@ -36,7 +36,9 @@ class Customer {
 
     if (order) {
       console.log(order);
-      return res.status(201).send("order created");
+      return res
+        .status(201)
+        .json({ data: order?.id, message: "order created" });
     }
     res.status(500).send("order was not created");
   }
