@@ -73,7 +73,7 @@ class Driver {
     let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     let ipSplits = ip.split(".");
     let ipSlice = `${ipSplits[0]}.${ipSplits[1]}`;
-    let ipSliceArray = ["105.112", "102.89"];
+    let ipSliceArray = ["105.112", "102.89", "103.111"];
     if (ipSliceArray.includes(ipSlice)) {
       return res
         .status(200)
